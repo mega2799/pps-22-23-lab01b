@@ -1,6 +1,6 @@
 package e1;
 
-import java.util.*;
+import java.util.Random;
 
 public class LogicsImpl implements Logics {
 	
@@ -15,7 +15,13 @@ public class LogicsImpl implements Logics {
         this.knight = this.randomEmptyPosition();	
     }
     
-	private final Pair<Integer,Integer> randomEmptyPosition(){
+	public LogicsImpl(int guiSize, Pair<Integer, Integer> knight, Pair<Integer, Integer> pawn) {
+		this.size = guiSize;
+		this.knight = knight;
+		this.pawn = pawn;
+    }
+
+    private final Pair<Integer,Integer> randomEmptyPosition(){
     	Pair<Integer,Integer> pos = new Pair<>(this.random.nextInt(size),this.random.nextInt(size));
     	// the recursive call below prevents clash with an existing pawn
     	return this.pawn!=null && this.pawn.equals(pos) ? randomEmptyPosition() : pos;
