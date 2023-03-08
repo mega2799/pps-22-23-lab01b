@@ -1,5 +1,6 @@
 package e2;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -63,24 +64,30 @@ public class LogicsImpl implements Logics {
     }
 
     @Override
-    public int getCellClosestMines(Pair<Integer, Integer> steppedCell) {
-    int result = 0;
-    Pair<Integer, Integer> min = new Pair<Integer,Integer>( 
-        (steppedCell.getX() <= 0 ? 0 : steppedCell.getX() - 1),
-        (steppedCell.getY() <= 0 ? 0 : steppedCell.getY() - 1));
-    Pair<Integer, Integer> max = new Pair<Integer,Integer>(
-      (steppedCell.getX() >= width - 1 ? width : steppedCell.getX() + 2),
-      (steppedCell.getY() >= height - 1 ? height : steppedCell.getY() + 2));   
+    public int getCellClosestNumOfMines(Pair<Integer, Integer> steppedCell) {
+    return this.adjacentCells(steppedCell)
+    .stream()
+    .filter((pair) -> this.mineMap.get(pair))
+    .collect(Collectors.counting()).intValue();
+    }
+
+    private List<Pair<Integer, Integer>> adjacentCells(Pair<Integer, Integer> steppedCell) {
+        List<Pair<Integer, Integer>> adjacentCells = new ArrayList<>();
+        Pair<Integer, Integer> min = new Pair<Integer,Integer>( 
+            (steppedCell.getX() <= 0 ? 0 : steppedCell.getX() - 1),
+            (steppedCell.getY() <= 0 ? 0 : steppedCell.getY() - 1));
+        Pair<Integer, Integer> max = new Pair<Integer,Integer>(
+          (steppedCell.getX() >= width - 1 ? width : steppedCell.getX() + 2),
+          (steppedCell.getY() >= height - 1 ? height : steppedCell.getY() + 2));   
  
-     // Check all immediate neighbours for mines
-     for (int i = min.getX(); i < max.getX(); i++) {
-       for (int j = min.getX(); j < max.getY(); j++) {
-         if (this.mineMap.get(new Pair<>(i, j))) {
-           result++;
+         // Check all immediate neighbours for mines
+         for (int i = min.getX(); i < max.getX(); i++) {
+           for (int j = min.getX(); j < max.getY(); j++) {
+             adjacentCells.add(new Pair<>(i, j));
+           }
          }
-       }
-     }
-     return result;
+
+         return adjacentCells;
     }
 
     

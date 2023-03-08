@@ -8,5 +8,7 @@ public interface Logics {
 
     int getActiveMines();
 
-    int getCellClosestMines(Pair<Integer, Integer> steppedCell);
+    int getCellClosestNumOfMines(Pair<Integer, Integer> steppedCell);
+
+
 }
