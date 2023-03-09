@@ -1,6 +1,7 @@
 package e2;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,9 +12,14 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import e2.Model.Cell;
+import e2.Model.CellImplementation;
+
+
 public class LogicsImpl implements Logics {
     private int numOfMines; 
     private Map<Pair<Integer,Integer>, Boolean> mineMap;
+    private List<Cell> cellsList;
     private int randomNumberBound;
     private int width, height;
 
@@ -21,31 +27,35 @@ public class LogicsImpl implements Logics {
         this.height = numOfMines;
         this.width = numOfMines;
         this.numOfMines = numOfMines;
-        this.mineMap= IntStream.range(0, numOfMines)
-                    .boxed()
-                    .flatMap((dimension) -> IntStream.range(0, numOfMines)
-                    .mapToObj((dimensionB) -> new Pair<>(dimension, dimensionB)))
-                    .collect(Collectors.toMap(Function.identity(), pair -> false));
+        this.cellsList = IntStream.range(0, numOfMines)
+                .boxed()
+                .flatMap((dimension) -> IntStream.range(0, numOfMines)
+                .mapToObj((dimensionB) -> new CellImplementation(new Pair<>(dimension, dimensionB))))
+                .collect(Collectors.toList());
         this.randomNumberBound = (numOfMines * numOfMines) - 1;
         interrateMines(false);
     }
 
     private void interrateMines(boolean randomic) {
+
         if(randomic){
+            List<Integer> randomator = IntStream
+            .range(0, numOfMines * numOfMines)
+            .boxed()
+            .collect(Collectors.toList());
+            Collections.shuffle(randomator);
+
             for (int randomInt : 
-                    new Random(new Date().getTime())
-                    .ints(numOfMines, 0, randomNumberBound)
-                    .distinct()
-                    .boxed()
-                    .collect(Collectors.toSet())) {
-                        this.mineMap.replace(this.mineMap.keySet().stream().toList().get(randomInt), 
-                        true);
+            randomator.stream()
+            .limit(numOfMines)
+            .collect(Collectors.toList())
+                    ) {
+                        this.cellsList.get(randomInt).armMine();
      }
     }else{
-
-        this.mineMap.replace(new Pair<>(0, 0), true);
+        this.cellsList.get(0).armMine();
     }
-     System.out.println(mineMap);
+     System.out.println(cellsList);
     }
 
     @Override
@@ -56,10 +66,9 @@ public class LogicsImpl implements Logics {
     @Override
     public int getActiveMines() {
         // a long can contiain an int, so safe cast
-        return (int)this.mineMap
-        .values()
+        return (int)this.cellsList
         .stream()
-        .filter((isThereAMine)-> isThereAMine.equals(true))
+        .filter((cell)-> cell.isArmed())
         .count();
     }
 
@@ -67,7 +76,8 @@ public class LogicsImpl implements Logics {
     public int getCellClosestNumOfMines(Pair<Integer, Integer> steppedCell) {
     return this.adjacentCells(steppedCell)
     .stream()
-    .filter((pair) -> this.mineMap.get(pair))
+    //! sei bloccato qui
+    .filter((pair) -> this.cellsList.stream().filter((cell) -> cell.getPosition().equals(steppedCell)).anyMatch((adjacent) -> adjacent.isArmed()))
     .collect(Collectors.counting()).intValue();
     }
 

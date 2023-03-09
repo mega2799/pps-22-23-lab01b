@@ -35,6 +35,6 @@ public class SetupTesting {
     @Test
     public void checkAdjacentCells(){
         this.randomIsOff(); // im sure is off
-        assertEquals(1, this.setupLogic.getCellClosestMines(new Pair<Integer,Integer>(0,1)));
+        assertEquals(1, this.setupLogic.getCellClosestNumOfMines(new Pair<Integer,Integer>(0,1)));
     }
 }
