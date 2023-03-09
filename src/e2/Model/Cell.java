@@ -11,4 +11,10 @@ public interface Cell {
     boolean isArmed();
 
     void armMine();
+
+
+    Integer getHolderMines();
+
+    void setHolderMines(Integer holderMines);
+
 }

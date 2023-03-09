@@ -3,6 +3,8 @@ package e2;
 import java.util.List;
 import java.util.Map;
 
+import e2.Model.Cell;
+
 public interface Logics {
     Map<Pair<Integer, Integer>, Boolean> getMineMap();
 
@@ -10,6 +12,8 @@ public interface Logics {
 
     int getCellClosestNumOfMines(Pair<Integer, Integer> steppedCell);
 
-    void step(Pair<Integer, Integer> steppedCell);
+    Boolean step(Pair<Integer, Integer> steppedCell);
+
+    Cell getCellFromPosition(Pair<Integer, Integer> from);
 
 }

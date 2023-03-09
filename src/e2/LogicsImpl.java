@@ -1,9 +1,11 @@
 package e2;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -33,7 +35,7 @@ public class LogicsImpl implements Logics {
                 .mapToObj((dimensionB) -> new CellImplementation(new Pair<>(dimension, dimensionB))))
                 .collect(Collectors.toList());
         this.randomNumberBound = (numOfMines * numOfMines) - 1;
-        interrateMines(false);
+        interrateMines(true);
     }
 
     private void interrateMines(boolean randomic) {
@@ -55,7 +57,6 @@ public class LogicsImpl implements Logics {
     }else{
         this.cellsList.get(0).armMine();
     }
-     System.out.println(cellsList);
     }
 
     @Override
@@ -86,12 +87,13 @@ public class LogicsImpl implements Logics {
             (steppedCell.getX() <= 0 ? 0 : steppedCell.getX() - 1),
             (steppedCell.getY() <= 0 ? 0 : steppedCell.getY() - 1));
         Pair<Integer, Integer> max = new Pair<Integer,Integer>(
-          (steppedCell.getX() >= width - 1 ? width : steppedCell.getX() + 2),
-          (steppedCell.getY() >= height - 1 ? height : steppedCell.getY() + 2));   
- 
+          (steppedCell.getX() == width - 1 ? width - 1: steppedCell.getX() + 1),
+          (steppedCell.getY() == height - 1 ? height - 1: steppedCell.getY() + 1));   
+
+
          // Check all immediate neighbours for mines
-         for (int i = min.getX(); i < max.getX(); i++) {
-           for (int j = min.getX(); j < max.getY(); j++) {
+         for (int i = min.getX(); i <= max.getX(); i++) {
+           for (int j = min.getY(); j <= max.getY(); j++) {
              adjacentCells.add(new Pair<>(i, j));
            }
          }
@@ -100,10 +102,31 @@ public class LogicsImpl implements Logics {
     }
 
     @Override
-    public void step(Pair<Integer, Integer> steppedCell) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'step'");
+    public Boolean step(Pair<Integer, Integer> steppedCell) {
+        List<Pair<Integer, Integer>> adjacentCells = this.adjacentCells(steppedCell);
+        int minesAround = this.getCellClosestNumOfMines(steppedCell);
+        Cell effectiveSteppedCell = this.getCellFromPosition(steppedCell);
+        if(effectiveSteppedCell.isArmed()) return true;
+        this.getCellFromPosition(steppedCell).setHolderMines(minesAround);
+        if(minesAround == 0 && effectiveSteppedCell.getHolderMines() != -1){
+            for (Pair<Integer,Integer> pair : adjacentCells) {
+                this.step(pair);
+            }
+            // adjacentCells.forEach((cell) -> this.step(cell));
+        }
+        return false;
     }
 
-    
+    @Override
+    public Cell getCellFromPosition(Pair<Integer, Integer> from) {
+        Iterator<Cell> iterator = this.cellsList.iterator();
+            while(iterator.hasNext()){
+                Cell current = iterator.next();
+                if(current.getPosition().equals(from)){
+                    return current;
+                }
+            }
+            return null;
+    }
+
 }

@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
 import javax.swing.event.MouseInputListener;
 
+import e2.Model.Cell;
+
 import java.util.*;
 import java.util.Map.Entry;
 import java.awt.*;
@@ -28,7 +30,7 @@ public class GUI extends JFrame {
             final JButton bt = (JButton)e.getSource();
             final Pair<Integer,Integer> pos = buttons.get(bt);
             // boolean aMineWasFound = false; // call the logic here to tell it that cell at 'pos' has been seleced
-            boolean aMineWasFound = this.logics.getMineMap().get(pos); // call the logic here to tell it that cell at 'pos' has been seleced
+            boolean aMineWasFound = this.logics.step(pos); // call the logic here to tell it that cell at 'pos' has been seleced
             if (aMineWasFound) {
                 quitGame();
                 JOptionPane.showMessageDialog(this, "You lost!!");
@@ -50,7 +52,7 @@ public class GUI extends JFrame {
                 if (bt.isEnabled()){
                     final Pair<Integer,Integer> pos = buttons.get(bt);
                     // call the logic here to put/remove a flag
-                    
+                    //logics.step(pos);
                 }
                 drawBoard(); 
             }
@@ -83,7 +85,10 @@ public class GUI extends JFrame {
             // call the logic here
             // if this button is a cell with counter, put the number
             // if this button has a flag, put the flag
-            
+            Cell cell = this.logics.getCellFromPosition(entry.getValue());
+            if(cell.getHolderMines() != -1) entry.getKey().setEnabled(false);
+            if(cell.getHolderMines() > 0) entry.getKey().setText(cell.getHolderMines().toString());
+
             // this.logics.getMineMap().get(this.buttons.get(entry)) ?
     	}
     }
