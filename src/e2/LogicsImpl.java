@@ -76,8 +76,7 @@ public class LogicsImpl implements Logics {
     public int getCellClosestNumOfMines(Pair<Integer, Integer> steppedCell) {
     return this.adjacentCells(steppedCell)
     .stream()
-    //! sei bloccato qui
-    .filter((pair) -> this.cellsList.stream().filter((cell) -> cell.getPosition().equals(steppedCell)).anyMatch((adjacent) -> adjacent.isArmed()))
+    .filter((pair) -> this.cellsList.stream().filter((cell) -> cell.getPosition().equals(pair)).anyMatch((adjacent) -> adjacent.isArmed()))
     .collect(Collectors.counting()).intValue();
     }
 
@@ -98,6 +97,12 @@ public class LogicsImpl implements Logics {
          }
 
          return adjacentCells;
+    }
+
+    @Override
+    public void step(Pair<Integer, Integer> steppedCell) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'step'");
     }
 
     

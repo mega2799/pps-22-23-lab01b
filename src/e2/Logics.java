@@ -10,5 +10,6 @@ public interface Logics {
 
     int getCellClosestNumOfMines(Pair<Integer, Integer> steppedCell);
 
+    void step(Pair<Integer, Integer> steppedCell);
 
 }
