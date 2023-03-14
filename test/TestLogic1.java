@@ -9,17 +9,19 @@ import e1.Logics;
 import e1.LogicsImpl;
 import e1.Pair;
 
-public class TestLogic1 {
+public class TestLogic1 implements TestLogic {
     private Logics logics;
     private static final int GUI_SIZE = 5; 
-    
 
     private final int nextHitX = 2; // -1
     private final int nextHitY = 2; // +2 
+
+    @Override
     public void init(){
         this.logics = new LogicsImpl(GUI_SIZE);
     }
     
+    @Override
     @Test
     public void outOfBoudThrows(){
         init();
@@ -27,10 +29,12 @@ public class TestLogic1 {
     }
 
 
+    @Override
     public void initPosition(){
         this.logics = new LogicsImpl(GUI_SIZE, new Pair<Integer, Integer>(nextHitY, nextHitX), new Pair<Integer, Integer>(nextHitY + 2, nextHitX -1));
     }
 
+    @Override
     @Test
     public void pieceIsThere(){
         this.initPosition();
@@ -38,11 +42,11 @@ public class TestLogic1 {
         assertTrue(logics.hasPawn(nextHitY + 2, nextHitX - 1));
     }
 
+    @Override
     @Test
     public void nextHit(){
         this.initPosition();
         assertTrue(logics.hit(nextHitY + 2, nextHitX -1 ));
     }
-
 
 }

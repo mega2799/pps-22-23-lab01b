@@ -69,19 +69,24 @@ public class GUI extends JFrame {
     
     private void quitGame() {
         this.drawBoard();
+        /*
     	for (var entry: this.buttons.entrySet()) {
+            
             // call the logic here
             // if this button is a mine, draw it "*"
             // disable the button
     	}
+        */
     }
 
     private void drawBoard() {
+        /*
         for (var entry: this.buttons.entrySet()) {
             // call the logic here
             // if this button is a cell with counter, put the number
             // if this button has a flag, put the flag
     	}
+        */
     }
     
 }
